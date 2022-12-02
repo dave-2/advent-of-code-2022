@@ -1,5 +1,5 @@
 # Advent of Code 2022
-By dave-tu
+By dave-2
 
 ## Run
 `$ python3 <day>.py`
