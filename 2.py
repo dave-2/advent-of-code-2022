@@ -7,17 +7,14 @@ import unittest
 
 class Shape(enum.IntEnum):
 
-    ROCK = 0
-    PAPER = 1
-    SCISSORS = 2
+    ROCK = 1
+    PAPER = 2
+    SCISSORS = 3
 
-    def score(self) -> int:
-        return self + 1
-
-    def battle(self, opponent: Shape) -> int:
-        if self == opponent: return 3
-        if self == (opponent + 1) % 3: return 6
-        return 0
+    def score_round(self, opponent: Shape) -> int:
+        if self == opponent: return self + 3
+        if self == opponent % 3 + 1: return self + 6
+        return self
 
     @staticmethod
     def from_letter(letter: str) -> Shape:
@@ -28,9 +25,9 @@ class Shape(enum.IntEnum):
 
     @staticmethod
     def from_tactic(opponent: Shape, tactic: str) -> Shape:
-        if tactic == 'X': return Shape((opponent - 1) % 3)
+        if tactic == 'X': return Shape((opponent + 1) % 3 + 1)
         if tactic == 'Y': return opponent
-        if tactic == 'Z': return Shape((opponent + 1) % 3)
+        if tactic == 'Z': return Shape(opponent % 3 + 1)
         raise ValueError(f'Unknown shape: "{tactic}"')
 
 
@@ -55,17 +52,13 @@ def parse_line(line: str) -> Round:
 
 
 def part_1(guide: StrategyGuide) -> int:
-    return sum(score_round(Shape.from_letter(self), opponent)
+    return sum(Shape.from_letter(self).score_round(opponent)
                for opponent, self in guide)
 
 
 def part_2(guide: StrategyGuide) -> int:
-    return sum(score_round(Shape.from_tactic(opponent, tactic), opponent)
+    return sum(Shape.from_tactic(opponent, tactic).score_round(opponent)
                for opponent, tactic in guide)
-
-
-def score_round(self: Shape, opponent: Shape):
-    return self.battle(opponent) + self.score()
 
 
 class Test2(unittest.TestCase):
